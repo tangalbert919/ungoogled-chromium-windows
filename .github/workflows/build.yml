@@ -24,7 +24,6 @@ jobs:
           choco install python3
       - name: Build
         run: |
-          cd ungoogled-chromium-windows
           py build.py
           py package.py
       - name: Move artifacts
