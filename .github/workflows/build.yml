@@ -1,0 +1,40 @@
+name: Ungoogled-chromium Windows build
+on: [push, pull_request]
+
+jobs:
+  build:
+    name: Build Chromium
+    runs-on: windows-latest
+    strategy:
+      matrix:
+        python-version: [2.7, 3.6]
+    
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v2
+      - name: Checkout submodule
+        run: |
+          git submodule sync --recursive
+          git -c protocol.version=2 submodule update --init --force --recursive --depth=1
+      - name: Setup Python
+        uses: actions/setup-python@v1
+        with:
+          python-version: ${{ matrix.python-version }}
+      - name: Install dependencies
+        run: |
+          python2 -m pip install pypiwin32
+      - name: Build
+        run: |
+          cd ungoogled-chromium-windows
+          python3 build.py
+          python3 package.py
+      - name: Move artifacts
+        run: |
+          mkdir ..\artifacts
+          copy build\ungoogled-chromium* ..\artifacts
+      - uses: actions/upload-artifact@master
+        name: Upload artifact
+        with:
+          name: Ungoogled-chromium-windows
+          path: ..\artifact\
+      
