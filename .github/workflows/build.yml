@@ -5,9 +5,6 @@ jobs:
   build:
     name: Build Chromium
     runs-on: windows-latest
-    strategy:
-      matrix:
-        python-version: [2.7, 3.6]
     
     steps:
       - name: Checkout repository
@@ -16,18 +13,20 @@ jobs:
         run: |
           git submodule sync --recursive
           git -c protocol.version=2 submodule update --init --force --recursive --depth=1
-      - name: Setup Python
+      - name: Setup Python 2
         uses: actions/setup-python@v1
         with:
-          python-version: ${{ matrix.python-version }}
+          python-version: 2.7
       - name: Install dependencies
+        run: python -m pip install pypiwin32
+      - name: Install Python 3
         run: |
-          python2 -m pip install pypiwin32
+          choco install python3
       - name: Build
         run: |
           cd ungoogled-chromium-windows
-          python3 build.py
-          python3 package.py
+          py build.py
+          py package.py
       - name: Move artifacts
         run: |
           mkdir ..\artifacts
