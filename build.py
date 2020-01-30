@@ -132,10 +132,16 @@ def main():
     _make_tmp_paths()
 
     # Get download metadata (DownloadInfo)
-    download_info = downloads.DownloadInfo([
+    if (os.getenv('AUTOMATED') == 1):
+      download_info = downloads.DownloadInfo([
+        _ROOT_DIR / 'downloads_workflow.ini',
+        _ROOT_DIR / 'ungoogled-chromium' / 'downloads.ini',
+      ])
+    else:
+      download_info = downloads.DownloadInfo([
         _ROOT_DIR / 'downloads.ini',
         _ROOT_DIR / 'ungoogled-chromium' / 'downloads.ini',
-    ])
+      ])
 
     # Retrieve downloads
     get_logger().info('Downloading required files...')
@@ -182,6 +188,10 @@ def main():
         source_tree,
         domsubcache
     )
+
+    # If run with GitHub Actions, remove download_cache folder to free needed space.
+    if (os.getenv('AUTOMATED') == 1):
+      os.rmdir(_ROOT_DIR / 'build' / 'download_cache')
 
     # Output args.gn
     (source_tree / 'out/Default').mkdir(parents=True)

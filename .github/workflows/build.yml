@@ -5,6 +5,8 @@ jobs:
   build:
     name: Build Chromium
     runs-on: windows-latest
+    env:
+      AUTOMATED: 1
     
     steps:
       - name: Checkout repository
@@ -21,9 +23,14 @@ jobs:
         run: python -m pip install pypiwin32
       - name: Install Python 3
         run: |
-          choco install python3
+          choco install python3 -y
       - name: Build
         run: |
+          echo blink_symbol_level=0 >> flags.windows.gn
+          echo symbol_level=0 >> flags.windows.gn
+          echo enable_resource_whitelist_generation=false >> flags.windows.gn
+          echo is_official_build=true >> flags.windows.gn
+          echo strip_debug_info=true >> flags.windows.gn
           py build.py
           py package.py
       - name: Move artifacts
