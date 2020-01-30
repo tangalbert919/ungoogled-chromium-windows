@@ -131,8 +131,11 @@ def main():
     downloads_cache.mkdir(parents=True, exist_ok=True)
     _make_tmp_paths()
 
+    # Get "AUTOMATED" variable set for GitHub Actions so this thing works.
+    is_github_action = int(os.getenv('AUTOMATED'))
+
     # Get download metadata (DownloadInfo)
-    if (os.getenv('AUTOMATED') == 1):
+    if (is_github_action == 1):
       download_info = downloads.DownloadInfo([
         _ROOT_DIR / 'downloads_workflow.ini',
         _ROOT_DIR / 'ungoogled-chromium' / 'downloads.ini',
@@ -145,7 +148,8 @@ def main():
 
     # Retrieve downloads
     get_logger().info('Downloading required files...')
-    downloads.retrieve_downloads(download_info, downloads_cache, True,
+    downloads.retrieve_downloads(download_info, downloads_cache,
+                                          False if is_github_action == 1 else True,
                                           args.disable_ssl_verification)
     try:
         downloads.check_downloads(download_info, downloads_cache)
@@ -190,8 +194,8 @@ def main():
     )
 
     # If run with GitHub Actions, remove download_cache folder to free needed space.
-    if (os.getenv('AUTOMATED') == 1):
-      os.rmdir(_ROOT_DIR / 'build' / 'download_cache')
+    if (is_github_action == 1):
+      shutil.rmtree(_ROOT_DIR / 'build' / 'downloads_cache')
 
     # Output args.gn
     (source_tree / 'out/Default').mkdir(parents=True)
