@@ -132,7 +132,13 @@ def main():
     )
     parser.add_argument(
         '--x86',
-        action='store_true'
+        action='store_true',
+        help=('Build Chromium for 32-bit machines.')
+    )
+    parser.add_argument(
+        '--build-arm',
+        action='store_true',
+        help=('Build Chromium for ARM machines. Only 64-bit ARM is supported.')
     )
     args = parser.parse_args()
 
@@ -210,6 +216,8 @@ def main():
         windows_flags = (_ROOT_DIR / 'flags.windows.gn').read_text(encoding=ENCODING)
         if args.x86:
             windows_flags = windows_flags.replace('x64', 'x86')
+        elif args.build_arm:
+            windows_flags = windows_flags.replace('x64', 'arm64')
         gn_flags += windows_flags
         (source_tree / 'out/Default/args.gn').write_text(gn_flags, encoding=ENCODING)
 
