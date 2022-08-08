@@ -134,6 +134,10 @@ def main():
         '--x86',
         action='store_true'
     )
+    parser.add_argument(
+        '--arm',
+        action='store_true'
+    )
     args = parser.parse_args()
 
     # Set common variables
@@ -210,6 +214,8 @@ def main():
         windows_flags = (_ROOT_DIR / 'flags.windows.gn').read_text(encoding=ENCODING)
         if args.x86:
             windows_flags = windows_flags.replace('x64', 'x86')
+        elif args.arm:
+            windows_flags = windows_flags.replace('x64', 'arm64')
         gn_flags += windows_flags
         (source_tree / 'out/Default/args.gn').write_text(gn_flags, encoding=ENCODING)
 
