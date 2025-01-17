@@ -200,6 +200,9 @@ def main():
         if unremovable_files:
             get_logger().error('Files could not be pruned: %s', unremovable_files)
             parser.exit(1)
+        # Drop binaries in shipped tarball, they are triggering WinError 193 and are not in pruning.list
+        if args.tarball:
+            prune_binaries.prune_dirs(source_tree, False, None)
 
         # Unpack downloads
         get_logger().info('Unpacking downloads...')
