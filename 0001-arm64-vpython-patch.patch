@@ -1,0 +1,42 @@
+From d1a0e6aeb87ca1b083779a59eb1f86d3d17b7e1a Mon Sep 17 00:00:00 2001
+From: Albert Tang <tangalbert919@yahoo.com>
+Date: Tue, 21 Jan 2025 22:59:38 -0800
+Subject: [PATCH] arm64/vpython patch
+
+---
+ utils/clone.py          | 2 +-
+ utils/depot_tools.patch | 8 ++++++++
+ 2 files changed, 9 insertions(+), 1 deletion(-)
+
+diff --git a/utils/clone.py b/utils/clone.py
+index bd62830d..a99b2b0f 100755
+--- a/utils/clone.py
++++ b/utils/clone.py
+@@ -318,7 +318,7 @@ def main():
+     parser.add_argument('-p',
+                         '--pgo',
+                         default='linux',
+-                        choices=('linux', 'mac', 'mac-arm', 'win32', 'win64'),
++                        choices=('linux', 'mac', 'mac-arm', 'win32', 'win64', 'win-arm64'),
+                         help='Specifiy which pgo profile to download.  Default: %(default)s')
+     parser.add_argument('-s',
+                         '--sysroot',
+diff --git a/utils/depot_tools.patch b/utils/depot_tools.patch
+index f03cfae7..7b7b1638 100644
+--- a/utils/depot_tools.patch
++++ b/utils/depot_tools.patch
+@@ -115,3 +115,11 @@
+  
+  # Google OAuth Context required by gsutil.
+  LUCI_AUTH_SCOPES = [
++--- a/gclient.bat
+++++ b/gclient.bat
++@@ -20,4 +20,4 @@ IF %ERRORLEVEL% NEQ 0 (
++ set PATH=%PATH%;%~dp0
++ 
++ :: Defer control.
++-call vpython3 "%~dp0gclient.py" %*
+++call python3 "%~dp0gclient.py" %*
+-- 
+2.48.1
+
