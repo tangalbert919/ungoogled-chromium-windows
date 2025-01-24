@@ -700,7 +700,11 @@ jobs:
         with:
           submodules: 'recursive'
       - name: Init
-        run: Copy-Item -Path . -Destination "C:\ungoogled-chromium-windows" -Recurse
+        run: |
+          cd ungoogled-chromium
+          git apply ../0001-arm64-vpython-patch.patch --reject
+          cd ..
+          Copy-Item -Path . -Destination "C:\ungoogled-chromium-windows" -Recurse
       - name: Setup Stage
         run: npm install
         working-directory: ./.github/actions/stage
