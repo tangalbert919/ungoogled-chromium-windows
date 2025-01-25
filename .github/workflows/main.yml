@@ -702,7 +702,7 @@ jobs:
       - name: Init
         run: |
           cd ungoogled-chromium
-          git am ../0001-arm64-vpython-patch.patch --reject
+          git apply ../0001-arm64-vpython-patch.patch --reject
           cd ..
           Copy-Item -Path . -Destination "C:\ungoogled-chromium-windows" -Recurse
       - name: Setup Stage
