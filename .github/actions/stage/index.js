@@ -18,7 +18,7 @@ async function run() {
     }
 
     const artifactClient = artifact.create();
-    const artifactName = x86 ? 'build-artifact-x86' : 'build-artifact';
+    const artifactName = x86 ? 'build-artifact-x86' : (arm ? 'build-artifact-arm' : 'build-artifact');
 
     if (from_artifact) {
         await artifactClient.downloadArtifact(artifactName, 'C:\\ungoogled-chromium-windows\\build');
