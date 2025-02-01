@@ -1,7 +1,7 @@
 const core = require('@actions/core');
 const io = require('@actions/io');
 const exec = require('@actions/exec');
-const artifact = require('@actions/artifact');
+const {DefaultArtifactClient} = require('@actions/artifact');
 const glob = require('@actions/glob');
 
 async function run() {
@@ -17,7 +17,7 @@ async function run() {
         return;
     }
 
-    const artifactClient = artifact.create();
+    const artifactClient = new DefaultArtifactClient();
     const artifactName = x86 ? 'build-artifact-x86' : (arm ? 'build-artifact-arm' : 'build-artifact');
 
     if (from_artifact) {
@@ -25,6 +25,8 @@ async function run() {
         await exec.exec('7z', ['x', 'C:\\ungoogled-chromium-windows\\build\\artifacts.zip',
             '-oC:\\ungoogled-chromium-windows\\build', '-y']);
         await io.rmRF('C:\\ungoogled-chromium-windows\\build\\artifacts.zip');
+        // delete artifact afterwards
+        await artifactClient.deleteArtifact(artifactName);
     }
 
     const args = ['build.py', '--ci']
