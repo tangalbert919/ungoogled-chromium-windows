@@ -25,6 +25,8 @@ async function run() {
         await exec.exec('7z', ['x', 'C:\\ungoogled-chromium-windows\\build\\artifacts.zip',
             '-oC:\\ungoogled-chromium-windows\\build', '-y']);
         await io.rmRF('C:\\ungoogled-chromium-windows\\build\\artifacts.zip');
+        // delete artifact afterwards
+        await artifactClient.deleteArtifact(artifactName);
     }
 
     const args = ['build.py', '--ci']
